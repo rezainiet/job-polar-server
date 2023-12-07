@@ -37,10 +37,10 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     const client = await initializeMongoClient();
 
-    const db = client.db("jobPortal");
-    const jobsCollection = db.collection("jobs");
-    const usersCollection = db.collection("users");
-    const applyCollection = db.collection("applied");
+    const db = await client.db("jobPortal");
+    const jobsCollection = await db.collection("jobs");
+    const usersCollection = await db.collection("users");
+    const applyCollection = await db.collection("applied");
 
     // Creating index for job sorting last job posted will show first
     const indexKeys = { title: 1, category: 1 }; 
