@@ -15,19 +15,27 @@ app.use(cors())
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@jobportal.a2ilieo.mongodb.net/?retryWrites=true&w=majority`;
 const uri = `mongodb+srv://${process.env.DB_USER2}:${process.env.DB_PASS2}@cluster0.dhokyox.mongodb.net/?retryWrites=true&w=majority`;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
+async function initializeMongoClient() {
+  const client = new MongoClient(uri, {
+      serverApi: {
+          version: ServerApiVersion.v1,
+          strict: true,
+          deprecationErrors: true,
+      }
+  });
 
+  try {
+      client.connect();
+      return client;
+  } catch (error) {
+      console.error('Error connecting to MongoDB:', error);
+      throw error;
+  }
+}
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-     client.connect();
+    const client = await initializeMongoClient();
 
     const db = client.db("jobPortal");
     const jobsCollection = db.collection("jobs");
@@ -191,4 +199,4 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
-})
+});
