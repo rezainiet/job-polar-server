@@ -40,6 +40,9 @@ async function run() {
     const result = await jobsCollection.createIndex(indexKeys, indexOptions);
     // console.log(result);
 
+    app.get('/', async (req, res) =>{
+      res.send('Great! Your server are running!')
+    })
     // post a job
     app.post("/post-job", async (req, res) => {
         const body = req.body;
