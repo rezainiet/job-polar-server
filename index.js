@@ -116,6 +116,12 @@ async function run() {
     res.status(200).send({ message: "User registered successful.", success: true })
   });
 
+  app.get('/users', async (req, res) => {
+    const query = {};
+    const result = await usersCollection.find(query).toArray();
+    res.send(result);
+  })
+
 
   app.post('/apply-for-job', async (req, res) => {
     try {
