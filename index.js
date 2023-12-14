@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 4000;
 
+
 app.use(express.json());
 app.use(cors());
 // app.use('/send/:email', limiter);
@@ -175,6 +176,13 @@ async function run() {
     }
   });
 
+  app.get('/applied-job-details/:id', async (req, res) => {
+    const id = req.params.id;
+    console.log(id);
+    const result = await applyCollection.findOne({ jobID: id });
+    res.send(result);
+  });
+
   app.post('/messages', async (req, res) => {
     const message = req.body;
     const result = await messageCollection.insertOne(message);
@@ -220,6 +228,7 @@ async function run() {
     const result = await messageCollection.deleteOne(query);
     res.send(result);
   });
+
 
   app.get('/', (req, res) => {
     res.send('App is running on a secure server? The answer is Yeah!');
