@@ -581,25 +581,40 @@ async function run() {
     }
   });
 
-  app.get('/applied-job-details/:id', async (req, res) => {
+  // app.get('/applied-job-details/:id', async (req, res) => {
+  //   const id = req.params.id;
+  //   console.log(id);
+  //   const result = await applyCollection.findOne({ jobID: id });
+  //   res.send(result);
+  // });
+
+  app.get('/applied-job-details/:id/:email', async (req, res) => {
     const id = req.params.id;
-    console.log(id);
-    const result = await applyCollection.findOne({ jobID: id });
+    const userEmail = req.params.email; // Use req.params.email to get the email from the URL params
+
+    console.log(`User with email ${userEmail} is querying job details with jobID ${id}`);
+
+    // Your logic to fetch job details based on jobID
+    const result = await applyCollection.findOne({ jobID: id, email: userEmail });
+
     res.send(result);
   });
+
+
 
   app.post('/messages', async (req, res) => {
     const message = req.body;
     const result = await messageCollection.insertOne(message);
     res.send(result);
   });
-  app.get('/messages/:email', async (req, res) => {
-    const id = req.params.email;
+
+  app.get('/messages/:email/:id', async (req, res) => {
     const email = req.params.email;
-    const querybyId = { jobId: id };
+    const id = req.params.id;
+    const queryById = { jobId: email };
 
     // Using toArray() on find is not necessary, as find returns a cursor
-    const result = await messageCollection.find(querybyId).toArray();
+    const result = await messageCollection.find(queryById).toArray();
 
     res.send(result);
   });
