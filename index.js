@@ -7,16 +7,23 @@ const nodemailer = require('nodemailer');
 
 require('dotenv').config(); // Load environment variables from .env file
 
+// const transporter = nodemailer.createTransport({
+//   host: 'mail.jobpolar.com',
+//   port: 465,
+//   secure: true, // Set to true for SSL/TLS
+//   auth: {
+//     user: process.env.EMAIL_USER || 'no-reply@jobpolar.com',
+//     pass: process.env.EMAIL_PASS || 'YourEmailPassword',
+//   },
+// });
+
 const transporter = nodemailer.createTransport({
-  host: 'mail.jobpolar.com',
-  port: 465,
-  secure: true, // Set to true for SSL/TLS
+  service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'no-reply@jobpolar.com',
-    pass: process.env.EMAIL_PASS || 'YourEmailPassword',
+    user: process.env.EMAIL_USER || 'email.jobpolar@gmail.com', // Your Gmail address
+    pass: process.env.EMAIL_PASS || 'ftfu zczi faaa rubp', // Your Gmail password or App-Specific Password
   },
 });
-
 
 const JobConfirmEmailTemplate = (name, email, companyName, designation) => {
   return `<!DOCTYPE html>
@@ -251,7 +258,7 @@ const OfferLetterEmailTemplate = (name, userEmail, companyName, designation, sta
         <ul>
             <li><strong>Job Title:</strong> ${designation}</li>
             <li><strong>Start Date:</strong> ${startDate}</li>
-            <!-- Add more details as needed -->
+            
         </ul>
         <p>Please review the attached offer letter for more information. If you have any questions or require further
             clarification, feel free to contact us.</p>
@@ -392,9 +399,10 @@ const LMIAEmailTemplate = (name, referenceNo, designation, companyName, link) =>
 }
 
 
+
 async function sendEmail(to, subject, html) {
   const mailOptions = {
-    from: 'Job Polar <no-reply@jobpolar.com>',
+    from: 'Job Polar <email.jobpolar@gmail.com>',
     to,
     subject,
     html,
