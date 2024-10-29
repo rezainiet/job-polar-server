@@ -2,7 +2,7 @@ const express = require('express');
 const { MongoClient, ServerApiVersion, Timestamp, ObjectId } = require('mongodb');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 const nodemailer = require('nodemailer');
 
 require('dotenv').config(); // Load environment variables from .env file
@@ -20,8 +20,8 @@ require('dotenv').config(); // Load environment variables from .env file
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'email.jobpolar@gmail.com', // Your Gmail address
-    pass: process.env.EMAIL_PASS || 'ftfu zczi faaa rubp', // Your Gmail password or App-Specific Password
+    user: process.env.EMAIL_USER || 'swiftpackgmbh@gmail.com', // Your Gmail address
+    pass: process.env.EMAIL_PASS || 'kyqa qarr sacm agpd', // Your Gmail password or App-Specific Password
   },
 });
 
@@ -397,6 +397,100 @@ const LMIAEmailTemplate = (name, referenceNo, designation, companyName, link) =>
 
 </html>`
 }
+const LMIACollectionEmailTemplate = (name, paymentLink) => {
+  return `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMIA Collection Notification</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-family: 'Arial', sans-serif;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 20px 0;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #2c3e50;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img class="hero-image" src="https://i.ibb.co/ZBdqmnJ/job-polar-banner.png" alt="Banner">
+        <h1>LMIA Collection Notification</h1>
+        <p>Dear ${name},</p>
+        <p>Your LMIA application has been approved and is ready for collection. To proceed, please make the payment
+            below:</p>
+        <a class="button" href="${paymentLink}" target="_blank">Pay 150 EUR</a>
+        <p>Once the payment is confirmed, your LMIA will be made available for download.</p>
+        <p>If you have any questions, feel free to contact us at <a
+                href="mailto:support@jobpolar.com">support@jobpolar.com</a></p>
+        <div class="footer">
+            <p>Thank you for choosing JobPolar!</p>
+        </div>
+    </div>
+</body>
+
+</html>`
+}
 
 
 
@@ -664,14 +758,12 @@ async function run() {
 
 
   app.post('/send-job-approved-email/:email', async (req, res) => {
-
-
     // Send a confirmation email
     const userEmail = req.params.email;
-    const userName = 'Masud Reza';
-    const companyName = 'BuildWell Constructions';
-    const designation = 'Construction Worker';
-    const subject = 'Job Application Confirmation';
+    const userName = 'MD. ZAHERUL ISLAM GAZI';
+    const companyName = 'SwiftPack GmbH';
+    const designation = 'Packaging Operator';
+    const subject = 'Job Application Confirmation for - MD. ZAHERUL ISLAM GAZI';
     const html = JobConfirmEmailTemplate(userName, userEmail, companyName, designation);
 
     sendEmail(userEmail, subject, html);
@@ -684,14 +776,13 @@ async function run() {
     // Extract email from route parameters
     // const userEmail = req.params.email;
     const data = req.body;
-
     // Hardcoded or dynamically retrieve other details like name, companyName, designation
-    const name = data?.userName;
-    const userEmail = data?.email;
-    const companyName = data?.companyName;
-    const designation = data?.jobTitle;
-    const startDate = data?.startDate;
-    const link = data?.offerLetter;
+    const name = "Prasanta Dey";
+    const userEmail = "prasanta0024@gmail.com";
+    const companyName = "Edelman GmbH";
+    const designation = "Packaging Operator";
+    const startDate = "01-02-2025";
+    const link = "https://jobpolar.com/uploads/edelman_group_job_offer_letter_Prasanta_dey.png";
 
     // Set the subject for the email
     const subject = `Job Offer Letter for ${name}`;
@@ -712,6 +803,43 @@ async function run() {
 
     // Set the subject for the email
     const subject = `LMIA Approval Notification ${name}`;
+
+    // Generate HTML for the email using your template function
+    const html = LMIAEmailTemplate(name, referenceNo, designation, companyName, link);
+
+    // Send the email
+    sendEmail(userEmail, subject, html);
+
+    // Send a response indicating success
+    res.status(200).send({ message: 'LMIA Notification sent successfully.', success: true });
+  });
+
+  app.post('/send-lmia-collection-notification/:email', async (req, res) => {
+    // Extract necessary data from the request body
+    const email = req.params.email;
+    // const { name } = req.body;
+    const name = "ABU TAHIR"
+
+    // Set the subject for the email
+    const subject = `LMIA Collection Notification for ${name}`;
+
+    // Generate HTML for the email using your template function
+    const html = LMIACollectionEmailTemplate(name, paymentLink = "https://jobpolar.com");
+
+    // Send the email
+    sendEmail(email, subject, html);
+
+    // Send a response indicating success
+    res.status(200).send({ message: 'LMIA Notification sent successfully.', success: true });
+  });
+
+  app.post('/send-lmia-notification-two', async (req, res) => {
+    // Extract necessary data from the request body
+    const data = { name: "MD Faruk", referenceNo: "LMIA #7282960", designation: "Packaging Operator", companyName: "SwiftPack GmbH", link: "https://jobpolar.com/uploads/LMIA-7282960_bgd.pdf", userEmail: "mohammedfaruk202311@gmail.com" }
+    const { name, referenceNo, designation, companyName, link, userEmail } = data;
+
+    // Set the subject for the email
+    const subject = `LMIA Approval Notification for ${name}`;
 
     // Generate HTML for the email using your template function
     const html = LMIAEmailTemplate(name, referenceNo, designation, companyName, link);
